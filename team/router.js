@@ -1,9 +1,12 @@
 const express = require('express');
-const router = express.Router();            //is this necessary? is this correct?
+//const router = express.Router();            //is this necessary? is this correct?
 //Import the Router class from express. Router is a named import, not default.
+const { Router } = require('express');
 const Team = require('./model');
 
-const teamRouter = router.get('/team', (req, res, next) => {
+const router = new Router()
+
+router.get('/team', (req, res, next) => {
     Team
         .findAll()
         .then(teams => {
@@ -19,4 +22,4 @@ const teamRouter = router.get('/team', (req, res, next) => {
         })
 })
 
-module.exports = teamRouter
+module.exports = router
