@@ -14,12 +14,33 @@ router.get('/team', (req, res, next) => {
                 .status(200)
                 .json({ teams: teams })
         })
-        .catch(err => {
-            res.status(500).json({
-                message: 'Something went wrong',
-                error: err
+        // .catch(err => {
+        //     res.status(500).json({
+        //         message: 'Something went wrong',
+        //         error: err
+        //     })
+        // })
+        .catch(error => next(error))            //what is "next"? what does it do?
+})
+
+router.post('/team', (req, res, next) => {
+    Team
+        .create(req.body)
+        .then(team => {
+            res.status(201).json({
+                message: "A NEW TEAM WAS ADDED",
+                "new Team": team
             })
         })
+        // .catch(err => {
+        //     res
+        //         .status(500)
+        //         .json({
+        //             message: "Something went wrong on our side. Sorry.",
+        //             error: err
+        //         })
+        // })
+        .catch(error => next(error))
 })
 
 module.exports = router
