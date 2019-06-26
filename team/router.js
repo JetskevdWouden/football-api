@@ -1,10 +1,10 @@
 const express = require('express');
-//const router = express.Router();            //is this necessary? is this correct?
-//Import the Router class from express. Router is a named import, not default.
 const { Router } = require('express');
 const Team = require('./model');
 
 const router = new Router()
+
+// "/team"
 
 router.get('/team', (req, res, next) => {
     Team
@@ -14,12 +14,6 @@ router.get('/team', (req, res, next) => {
                 .status(200)
                 .json({ teams: teams })
         })
-        // .catch(err => {
-        //     res.status(500).json({
-        //         message: 'Something went wrong',
-        //         error: err
-        //     })
-        // })
         .catch(error => next(error))            //what is "next"? what does it do?
 })
 
@@ -32,14 +26,43 @@ router.post('/team', (req, res, next) => {
                 "new Team": team
             })
         })
-        // .catch(err => {
-        //     res
-        //         .status(500)
-        //         .json({
-        //             message: "Something went wrong on our side. Sorry.",
-        //             error: err
-        //         })
-        // })
+        .catch(error => next(error))
+})
+
+// "/team/:id"
+
+router.get('/team/:id', (req, res, next) => {
+    const id = req.params.id
+    Team
+        .findByPk(id)
+        .then(team => {
+            res
+                .status(200)
+                .json({ team: team })
+        })
+        .catch(error => next(error))
+})
+
+router.put('/team/:id', (req, res, next) => {
+    const id = req.params.id
+    Team
+        .findByPk(id)
+        .then(team => {
+            if (team) {
+                team.update(req.body)
+                    .then(team => {
+                        res
+                            .status(200)
+                            .json({ team })
+                    })
+            } else {
+                res
+                    .status(404)
+                    .json({
+                        message: "Team not found"
+                    })
+            }
+        })
         .catch(error => next(error))
 })
 
