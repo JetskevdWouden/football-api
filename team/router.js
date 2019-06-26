@@ -6,6 +6,7 @@ const router = new Router()
 
 // "/team"
 
+//show all teams
 router.get('/team', (req, res, next) => {
     Team
         .findAll()
@@ -17,13 +18,16 @@ router.get('/team', (req, res, next) => {
         .catch(error => next(error))            //what is "next"? what does it do?
 })
 
+//add a team
 router.post('/team', (req, res, next) => {
     Team
         .create(req.body)
         .then(team => {
-            res.status(201).json({
-                message: "A NEW TEAM WAS ADDED",
-                "new Team": team
+            res
+                .status(201)
+                .json({
+                    message: "A NEW TEAM WAS ADDED",
+                    "new Team": team
             })
         })
         .catch(error => next(error))
@@ -31,6 +35,7 @@ router.post('/team', (req, res, next) => {
 
 // "/team/:id"
 
+//show a team by id
 router.get('/team/:id', (req, res, next) => {
     const id = req.params.id
     Team
@@ -43,6 +48,7 @@ router.get('/team/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
+//update a team by id
 router.put('/team/:id', (req, res, next) => {
     const id = req.params.id
     Team
