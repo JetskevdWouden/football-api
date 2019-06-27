@@ -1,4 +1,6 @@
 const User = require('../user/model');
+const { toData } = require('./jwt');
+const { Router } = require('express');
 
 function auth(req, res, next) {
     const auth = req.headers.authorization && req.headers.authorization.split(' ');
@@ -6,7 +8,7 @@ function auth(req, res, next) {
         try {
             const data = toData(auth[1])
             User
-                .findById(data.userId)
+                .findByPk(data.userId)
                 .then(user => {
                     if (!user)
                         return next('User does not exist :(')
@@ -26,7 +28,7 @@ function auth(req, res, next) {
         res
             .status(400)
             .send({
-                message: 'Please suplly some valid credentials'
+                message: 'Please suply some valid credentials'
             })
     }
 }

@@ -8,14 +8,22 @@ const router = new Router()
 
 //show all teams
 router.get('/team', (req, res, next) => {
-    Team
-        .findAll()
-        .then(teams => {
+    const limit = req.query.limit || 10;
+    const offset = req.query.offset || 0;
+
+    Promise.all([
+        Team.count(),
+        Team.findAll({ limit, offset })
+    ])
+        .then(([total, teams]) => {
             res
                 .status(200)
-                .json({ teams: teams })
+                .send({
+                    teams: teams,
+                    "Amount of teams on this 'page'": total
+                })
         })
-        .catch(error => next(error))            //what is "next"? what does it do?
+        .catch(error => next(error))
 })
 
 //add a team
@@ -28,7 +36,7 @@ router.post('/team', (req, res, next) => {
                 .json({
                     message: "A NEW TEAM WAS ADDED",
                     "new Team": team
-            })
+                })
         })
         .catch(error => next(error))
 })

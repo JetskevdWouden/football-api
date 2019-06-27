@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { toJWT, toData } = require('./jwt')
+const { toJWT } = require('./jwt')
 const bcrypt = require('bcrypt');
 const User = require('../user/model')
 const auth = require('./middleware')
@@ -30,6 +30,7 @@ router.post('/logins', (req, res, next) => {        //expect an email and passwo
         // 3. if the password is correct, return a JWT with the userId of the user (user.id)
                     res
                         .send({
+                            message: "Here's a token!",
                             jwt: toJWT({ userId: entity.id })
                         })
                 } else {

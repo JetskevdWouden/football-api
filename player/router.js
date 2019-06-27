@@ -9,12 +9,20 @@ const router = new Router()
 
 //show all players
 router.get('/player', (req, res, next) => {
-    Player
-        .findAll()
-        .then(players => {
+    const limit = req.query.limit || 25             //return how many results
+    const offset = req.query.offset || 0            //starting at wat result
+
+    Promise.all([                                   //.count & .findall first happen sequentially : but are not depended on each other to run together return promise when execurted
+        Player.count(),                             //counting total amount of results
+        Player.findAll({ limit, offset })           //find all within these parameters               
+    ])
+        .then(([total, players]) => {               //both respsonese of promises
             res
                 .status(200)
-                .json({ players: players })
+                .send({
+                    players: players,
+                    "Amount of players on this 'page'": total
+                })
         })
         .catch(error => next(error))
 })
@@ -29,7 +37,7 @@ router.post('/player', (req, res, next) => {
                 .json({
                     message: "A NEW PLAYER WAS ADDED",
                     "new Player": player
-            })
+                })
         })
         .catch(error => next(error))
 })
@@ -40,7 +48,7 @@ router.post('/player', (req, res, next) => {
 router.get('/player/:id', (req, res, next) => {
     const id = req.params.id
     Player
-        .findByPk(id, {include: [Team]})
+        .findByPk(id, { include: [Team] })
         .then(player => {
             res
                 .status(200)
